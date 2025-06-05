@@ -2,13 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-    <script type="module" crossorigin src="/assets/index-e_yxjxEx.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CT1qdEtf.css">
+    <title>Articles</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="articles-container"></div>
+
+    <form id="article-form">
+      <input type="text" name="title" placeholder="Tytuł"><br>
+      <input type="text" name="subtitle" placeholder="Podtytuł"><br>
+      <input type="text" name="author" placeholder="Autor"><br>
+      <textarea name="content" placeholder="Treść"></textarea><br>
+      <button type="submit">Stwórz</button>
+    </form>
+
+    <script type="module" src="./src/main.js"></script>
+
   </body>
 </html>

@@ -1,24 +1,59 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+const fetchArticles = async () => {
+  try {
+    const response = await fetch(
+      'https://nzkalsgkbirjotbvjypy.supabase.co/rest/v1/article?select=*', {
+      headers: {
+        apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56a2Fsc2drYmlyam90YnZqeXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjAwMjksImV4cCI6MjA2MzIzNjAyOX0.uWjEwPCUXZurDh25MMf0MYphjjAMOMW4fsNEaCnKDN4',
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+};
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1 class="text-2xl text-primary font-bold">Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button" class="bg-blue-300 p-4"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+fetchArticles().then((articles) => {
+  const container = document.createElement('div');
 
-setupCounter(document.querySelector('#counter'))
+  articles.forEach((article) => {
+    const articleElement = document.createElement('div');
+
+    articleElement.innerHTML = `
+      <h2>${article.title}</h2>
+      <h4>${article.subtitle}</h4>
+      <p>Autor: ${article.author}</p>
+      <p>Data: ${new Date(article.created_at).toLocaleDateString('pl-PL')}</p>
+      <p>${article.content}</p>
+      <hr>
+    `;
+
+    container.appendChild(articleElement);
+  });
+
+  document.getElementById('articles-container').appendChild(container);
+});
+
+document.getElementById('article-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const f = e.target;
+  const article = {
+    title: f.title.value,
+    subtitle: f.subtitle.value,
+    author: f.author.value,
+    content: f.content.value,
+    created_at: new Date().toISOString()
+  };
+
+  await fetch('https://nzkalsgkbirjotbvjypy.supabase.co/rest/v1/article', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56a2Fsc2drYmlyam90YnZqeXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2NjAwMjksImV4cCI6MjA2MzIzNjAyOX0.uWjEwPCUXZurDh25MMf0MYphjjAMOMW4fsNEaCnKDN4'
+    },
+    body: JSON.stringify(article)
+  });
+
+  f.reset();
+});
